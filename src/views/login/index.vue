@@ -5,10 +5,15 @@
     <!-- /导航栏 -->
     <!-- 登录表单 -->
     <van-form @submit="onSubmit">
-      <van-field name="用户名" placeholder="请输入手机号"  v-model="user.mobile">
+      <van-field name="用户名" placeholder="请输入手机号" v-model="user.mobile">
         <i slot="left-icon" class="toutiao toutiao-shouji"></i>
       </van-field>
-      <van-field type="password" name="验证码" placeholder="请输入验证码" v-model="user.code">
+      <van-field
+        type="password"
+        name="验证码"
+        placeholder="请输入验证码"
+        v-model="user.code"
+      >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
         <template #button>
           <van-button class="send-sms-btn" round size="small" type="default"
@@ -26,7 +31,7 @@
   </div>
 </template>
 <script>
-import { login } from '@/api/user.js'
+import { login } from "@/api/user.js";
 export default {
   name: "LoginIndex",
   components: {},
@@ -44,19 +49,29 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    async onSubmit () {
-      const user = this.user
+    async onSubmit() {
+      // 1. 获取表单数据
+      const user = this.user;
+      // TODO: 2. 表单验证
+      // 3. 提交表单请求登录
+      this.$toast.loading({
+        message: "登录中...",
+        forbidClick: true, // 禁用背景点击
+        duration: 0, // 持续时间，默认 2000，0 表示持续展示不关闭
+      });
       try {
-        const res = await login(user)
-        console.log('登录成功',res);
+        const res = await login(user);
+        console.log("登录成功", res);
+        this.$toast.success("登录成功");
       } catch (err) {
         if (err.response.status === 400) {
-          console.log('手机号或验证码错误');
+          this.$toast.fail("手机号或验证码错误");
         } else {
-          console.log(err,'登录失败');
+          this.$toast.fail("登录失败，请稍后重试");
         }
       }
-    }
+      // 4. 根据请求响应结果处理后续操作
+    },
   },
 };
 </script>
