@@ -5,14 +5,13 @@
     <!-- /导航栏 -->
     <!-- 登录表单 -->
     <van-form @submit="onSubmit">
-      <van-field name="用户名" placeholder="请输入手机号" v-model="user.mobile">
+      <van-field name="手机号" placeholder="请输入手机号" v-model="user.mobile" :rules="userFormRules.mobile"
+      type="number"  maxlength="11"
+      >
         <i slot="left-icon" class="toutiao toutiao-shouji"></i>
       </van-field>
-      <van-field
-        type="password"
-        name="验证码"
-        placeholder="请输入验证码"
-        v-model="user.code"
+      <van-field  type="number" name="验证码" placeholder="请输入验证码" 
+      v-model="user.code" :rules="userFormRules.code" maxlength="6"
       >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
         <template #button>
@@ -39,9 +38,25 @@ export default {
   data() {
     return {
       user: {
-        mobile: "13911111113",
-        code: "246810",
+        mobile: "13911111113", // 手机号
+        code: "246810", // 验证码
       },
+        userFormRules: {
+        mobile: [{
+          required: true,
+          message: '手机号不能为空'
+        }, {
+          pattern: /^1[3|5|7|8]\d{9}$/,
+          message: '手机号格式错误'
+        }],
+        code: [{
+          required: true,
+          message: '验证码不能为空'
+        }, {
+          pattern: /^\d{6}$/,
+          message: '验证码格式错误'
+        }]
+      }
     };
   },
   computed: {},
