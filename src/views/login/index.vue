@@ -109,8 +109,9 @@ export default {
         this.$store.commit('setUser', data.data)
         this.$toast.success('登录成功')
         // 跳转回原来的页面
-        this.$router.push(this.$router.query.redirect || '/')
+        this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
+        console.log(err);
         if (err.response.status === 400) {
           this.$toast.fail('手机号或验证码错误')
         } else {
