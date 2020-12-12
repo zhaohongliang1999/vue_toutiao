@@ -4,18 +4,34 @@
     <van-nav-bar class="page-nav-bar" title="登录" />
     <!-- /导航栏 -->
     <!-- 登录表单 -->
-    <van-form @submit="onSubmit">
-      <van-field name="手机号" placeholder="请输入手机号" v-model="user.mobile" :rules="userFormRules.mobile"
-      type="number"  maxlength="11"
+    <van-form @submit="onSubmit" ref="loginForm">
+      <van-field
+        name="mobile"
+        placeholder="请输入手机号"
+        v-model="user.mobile"
+        :rules="userFormRules.mobile"
+        type="number"
+        maxlength="11"
       >
         <i slot="left-icon" class="toutiao toutiao-shouji"></i>
       </van-field>
-      <van-field  type="number" name="验证码" placeholder="请输入验证码" 
-      v-model="user.code" :rules="userFormRules.code" maxlength="6"
+      <van-field
+        type="number"
+        name="code"
+        placeholder="请输入验证码"
+        v-model="user.code"
+        :rules="userFormRules.code"
+        maxlength="6"
       >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
         <template #button>
-          <van-button class="send-sms-btn" round size="small" type="default"
+          <van-button
+            native-type="button"
+            class="send-sms-btn"
+            round
+            size="small"
+            type="default"
+            @click="onSendSms"
             >发送验证码</van-button
           >
         </template>
@@ -30,7 +46,7 @@
   </div>
 </template>
 <script>
-import { login } from "@/api/user.js";
+import { login , sendSms } from "@/api/user.js";
 export default {
   name: "LoginIndex",
   components: {},
@@ -41,22 +57,28 @@ export default {
         mobile: "13911111113", // 手机号
         code: "246810", // 验证码
       },
-        userFormRules: {
-        mobile: [{
-          required: true,
-          message: '手机号不能为空'
-        }, {
-          pattern: /^1[3|5|7|8]\d{9}$/,
-          message: '手机号格式错误'
-        }],
-        code: [{
-          required: true,
-          message: '验证码不能为空'
-        }, {
-          pattern: /^\d{6}$/,
-          message: '验证码格式错误'
-        }]
-      }
+      userFormRules: {
+        mobile: [
+          {
+            required: true,
+            message: "手机号不能为空",
+          },
+          {
+            pattern: /^1[3|5|7|8]\d{9}$/,
+            message: "手机号格式错误",
+          },
+        ],
+        code: [
+          {
+            required: true,
+            message: "验证码不能为空",
+          },
+          {
+            pattern: /^\d{6}$/,
+            message: "验证码格式错误",
+          },
+        ],
+      },
     };
   },
   computed: {},
@@ -86,6 +108,18 @@ export default {
         }
       }
       // 4. 根据请求响应结果处理后续操作
+    },
+    // 验证手机号
+    async onSendSms() {
+      // 1. 校验手机号
+      try {
+         // 1. 校验手机号，'mobile' 对应的是 name 属性值
+        await this.$refs.loginForm.validate("mobile");
+      } catch (err) {
+        return console.log("验证失败", err);
+      }
+      // 2. 验证通过，显示倒计时
+      // 3. 请求发送验证码
     },
   },
 };
