@@ -1,24 +1,7 @@
 <template>
   <div class="my-container">
-    <!-- 未登录头部 -->
-    <div class="header not-login">
-      <div
-        class="login-btn"
-        @click="
-          $router.push({
-            name: 'login',
-            query: {
-              redirect: '/my',
-            },
-          })
-        "
-      >
-        <img class="mobile-img" src="~@/assets/mobile.png" alt="" />
-        <span class="text">登录 / 注册</span>
-      </div>
-    </div>
-    <!-- 已登录 -->
-    <div class="header user-info">
+       <!-- 已登录 -->
+    <div v-if="user" class="header user-info">
       <div class="base-info">
         <div class="left">
           <van-image
@@ -52,7 +35,24 @@
         </div>
       </div>
     </div>
-     <van-grid :column-num="2" class="grid-nav mb-9" clickable>
+    <!-- 未登录头部 -->
+    <div v-else class="header not-login">
+      <div
+        class="login-btn"
+        @click="
+          $router.push({
+            name: 'login',
+            query: {
+              redirect: '/my',
+            },
+          })
+        "
+      >
+        <img class="mobile-img" src="~@/assets/mobile.png" alt="" />
+        <span class="text">登录 / 注册</span>
+      </div>
+    </div>
+    <van-grid :column-num="2" class="grid-nav mb-9" clickable>
       <van-grid-item class="grid-item">
         <i slot="icon" class="iconfont iconshoucang"></i>
         <span slot="text" class="text">收藏</span>
@@ -65,13 +65,17 @@
     <!-- Cell 单元格 -->
     <van-cell title="消息通知" is-link />
     <van-cell class="mb-9" title="小智同学" is-link />
-    <van-cell class="logout-cell" clickable title="退出登录" />
+    <van-cell v-if="user" class="logout-cell" clickable title="退出登录" />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: "MyIndex",
+  computed : {
+    ...mapState(['user'])
+  }
 };
 </script>
 
