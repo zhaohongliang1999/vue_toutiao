@@ -1,6 +1,6 @@
 <template>
   <div class="my-container">
-       <!-- 已登录 -->
+    <!-- 已登录 -->
     <div v-if="user" class="header user-info">
       <div class="base-info">
         <div class="left">
@@ -54,28 +54,50 @@
     </div>
     <van-grid :column-num="2" class="grid-nav mb-9" clickable>
       <van-grid-item class="grid-item">
-        <i slot="icon" class="iconfont iconshoucang"></i>
+        <i slot="icon" class="toutiao toutiao-shoucang1"></i>
         <span slot="text" class="text">收藏</span>
       </van-grid-item>
       <van-grid-item class="grid-item">
-        <i slot="icon" class="iconfont iconlishi"></i>
+        <i slot="icon" class="toutiao toutiao-lishi1"></i>
         <span slot="text" class="text">历史</span>
       </van-grid-item>
     </van-grid>
     <!-- Cell 单元格 -->
     <van-cell title="消息通知" is-link />
     <van-cell class="mb-9" title="小智同学" is-link />
-    <van-cell v-if="user" class="logout-cell" clickable title="退出登录" />
+    <van-cell
+      v-if="user"
+      class="logout-cell"
+      clickable
+      title="退出登录"
+      @click="onLogout"
+    />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 export default {
   name: "MyIndex",
-  computed : {
-    ...mapState(['user'])
-  }
+  computed: {
+    ...mapState(["user"]),
+  },
+  methods: {
+    onLogout() {
+      // 提示
+      this.$dialog
+        .confirm({
+          title: "确认退出吗？",
+        })
+        .then(() => {
+          // 确认
+          // 清除登录状态（容器中的 user 和本地的 user）
+          this.$store.commit("setUser", null);
+        }).catch(() => {
+          // 关闭
+        })
+    },
+  },
 };
 </script>
 
@@ -154,10 +176,10 @@ export default {
       i.toutiao {
         font-size: 45px;
       }
-      .toutiao-shoucang {
+      .toutiao-shoucang1 {
         color: #eb5253;
       }
-      .toutiao-lishi {
+      .toutiao-lishi1 {
         color: #ff9d1d;
       }
       span.text {
