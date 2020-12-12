@@ -96,12 +96,14 @@ export default {
       // 2. 表单验证
       // 3. 提交表单请求登录
       this.$toast.loading({
-        message: '登陆中...',
-        forbidClick: true,
-        duration: 0
+        message: '登陆中...', // 提示消息
+        forbidClick: true, // 是否禁止背景点击
+        duration: 0  // 持续时间，0表示持续展示不停止
       })
       try {
-        await login(user)
+        const { data } =  await login(user)
+        // 设置数据到 Vuex
+        this.$store.commit('setUser', data.data)
         this.$toast.success('登录成功')
       } catch (err) {
         if (err.response.status === 400) {
