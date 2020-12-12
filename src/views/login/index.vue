@@ -25,6 +25,7 @@
       >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
         <template #button>
+          <van-count-down v-if="isCountDownShow" :time="1000 * 10" @finish="isCountDownShow = false" />
           <van-button
             native-type="button"
             class="send-sms-btn"
@@ -46,7 +47,7 @@
   </div>
 </template>
 <script>
-import { login , sendSms } from "@/api/user.js";
+import { login, sendSms } from "@/api/user.js";
 export default {
   name: "LoginIndex",
   components: {},
@@ -79,6 +80,7 @@ export default {
           },
         ],
       },
+      isCountDownShow: false, // 是否展示倒计时
     };
   },
   computed: {},
@@ -113,12 +115,13 @@ export default {
     async onSendSms() {
       // 1. 校验手机号
       try {
-         // 1. 校验手机号，'mobile' 对应的是 name 属性值
+        // 1. 校验手机号，'mobile' 对应的是 name 属性值
         await this.$refs.loginForm.validate("mobile");
       } catch (err) {
         return console.log("验证失败", err);
       }
       // 2. 验证通过，显示倒计时
+       this.isCountDownShow = true // 显示倒计时
       // 3. 请求发送验证码
     },
   },
