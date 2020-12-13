@@ -2,7 +2,7 @@
  * 用户相关的请求模块
  */
 import request from "@/utils/request"
-import store from '@/store'
+// import store from '@/store'
 /**
  * 用户登录
  */
