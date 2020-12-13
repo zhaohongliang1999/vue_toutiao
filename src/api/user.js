@@ -28,8 +28,8 @@ export const getUserInfo = () => {
     method : 'GET',
     url : '/app/v1_0/user',
     // 携带请求头信息
-    headers : {
-      Authorization: `Bearer ${store.state.user.token}`
-    }
+    // headers : {
+    //   Authorization: `Bearer ${store.state.user.token}`
+    // }
   })
 }
