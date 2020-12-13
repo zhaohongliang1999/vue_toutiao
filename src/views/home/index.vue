@@ -14,12 +14,11 @@
     </van-nav-bar>
     <!-- 频道列表 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab
-        v-for="item in channels"
-        :key="item.id"
-        :title="item.name"
-        >{{ item.name }}的内容</van-tab
-      >
+      <van-tab v-for="item in channels" :key="item.id" :title="item.name">
+        <!-- 频道的文章列表 -->
+        <article-list :channel="item" />
+        <!-- 频道的文章列表 /-->
+      </van-tab>
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
         <i class="toutiao toutiao-gengduo"></i>
@@ -29,37 +28,38 @@
 </template>
 
 <script>
-import { getUserChannels } from '@/api/user'
-import ArticleList from './components/article-list'
+import { getUserChannels } from "@/api/user";
+import ArticleList from "./components/article-list";
 export default {
-  name: 'HomeIndex',
-  components : {
-     ArticleList
+  name: "HomeIndex",
+  components: {
+    ArticleList,
   },
   data() {
     return {
       active: 0,
-      channels: []
-    }
+      channels: [],
+    };
   },
   created() {
-    this.loadChannels()
+    this.loadChannels();
   },
   methods: {
     async loadChannels() {
       try {
-        const { data } = await getUserChannels()
-        this.channels = data.data.channels
+        const { data } = await getUserChannels();
+        this.channels = data.data.channels;
       } catch (err) {
-        this.$toast('获取频道数据失败')
+        this.$toast("获取频道数据失败");
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="less" scoped>
 // 当前组件中加了 scoped 对内部样式的修改需要加 /deep/，或者去掉 scoped
 .home-container {
+  padding-bottom: 100px;
   /deep/ .van-nav-bar__title {
     max-width: unset;
   }
@@ -116,7 +116,7 @@ export default {
         font-size: 33px;
       }
       &:before {
-        content: '';
+        content: "";
         position: absolute;
         left: 0;
         width: 1px;
