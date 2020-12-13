@@ -15,10 +15,10 @@
     <!-- 频道列表 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
       <van-tab
-        v-for="channel in channels"
-        :key="channel.id"
-        :title="channel.name"
-        >{{ channel.name }}的内容</van-tab
+        v-for="item in channels"
+        :key="item.id"
+        :title="item.name"
+        >{{ item.name }}的内容</van-tab
       >
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
@@ -30,8 +30,12 @@
 
 <script>
 import { getUserChannels } from '@/api/user'
+import ArticleList from './components/article-list'
 export default {
   name: 'HomeIndex',
+  components : {
+     ArticleList
+  },
   data() {
     return {
       active: 0,
