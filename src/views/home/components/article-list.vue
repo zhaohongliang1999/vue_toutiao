@@ -1,19 +1,26 @@
 <template>
   <div class="article-list">
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      :error.sync="error"
-      error-text="请求失败，点击重新加载"
-      @load="onLoad"
+    <van-pull-refresh
+      v-model="isRefreshLoading"
+      @refresh="onRefresh"
+      :success-text="refreshSuccessText"
+      :success-duration="1500"
     >
-      <van-cell
-        v-for="(article, index) in list"
-        :key="index"
-        :title="article.title"
-      />
-    </van-list>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <van-cell
+          v-for="(article, index) in list"
+          :key="index"
+          :title="article.title"
+        />
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -34,6 +41,8 @@ export default {
       finished: false, // 数据是否加载完成
       error: false, // 是否加载失败
       timestamp: null, // 请求获取下一页数据的时间戳
+      isRefreshLoading: false,
+      refreshSuccessText: ''
     };
   },
   methods: {
@@ -44,7 +53,7 @@ export default {
           channel_id: this.channel.id, // 频道 ID
           // 请求数据的页码，请求第 1 页数据，用当前最新时间戳
           // 用于请求之后数据的时间戳会在当前请求的返回值中给出
-          timestamp: this.timestamp || Date.now(),
+          timestamp: Date.now(),
           with_top: 1, // 是否包含置顶
         });
         // 2. 把请求结果数据放到 list 数组中
@@ -66,8 +75,33 @@ export default {
         this.error = true // 开启错误提示
       }
     },
-  },
-};
+     async onRefresh() {
+      try {
+        // 请求获取数据
+        const { data } = await getArticles({
+          channel_id: this.channel.id,
+          timestamp: Date.now(),
+          with_top: 1
+        })
+        /* if (Math.random() > 0.5) {
+          JSON.parse('xxx')
+        } */
+        // 将数据追加到列表的顶部
+        const { results } = data.data
+        this.list.unshift(...results)
+        // 关闭下拉刷新的 loading 状态
+        this.isRefreshLoading = false
+        // 更新下拉刷新成功提示的文本
+        this.refreshSuccessText = `刷新成功，更新了${results.length}条数据`
+      } catch (err) {
+        // 关闭下拉刷新的 loading 状态
+        this.isRefreshLoading = false
+        // 更新下拉刷新成功提示的文本
+        this.refreshSuccessText = '刷新失败'
+      }
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped></style>
