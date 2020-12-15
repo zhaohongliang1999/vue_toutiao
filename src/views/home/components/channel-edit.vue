@@ -33,6 +33,7 @@
         :key="index"
         icon="plus"
         :text="channel.name"
+        @click="onAddChannel(channel)"
       >
       </van-grid-item>
     </van-grid>
@@ -59,7 +60,7 @@ export default {
     };
   },
   created() {
-      this.loadAllChannels()
+    this.loadAllChannels();
   },
   methods: {
     async loadAllChannels() {
@@ -70,8 +71,11 @@ export default {
         this.$toast("数据获取失败");
       }
     },
+    onAddChannel(channel) {
+      this.myChannels.push(channel)
+    },
   },
-   computed: {
+  computed: {
     /* recommendChannels() {
       const channels = []
       this.allChannels.forEach(channel => {
@@ -88,11 +92,13 @@ export default {
     } */
     recommendChannels() {
       // filter 把符合条件的元素返回到新数组
-      return this.allChannels.filter(channel => {
+      return this.allChannels.filter((channel) => {
         // find 找到符合条件的第一个就返回，后面就不再查找！
-        return !this.myChannels.find(myChannel => myChannel.id === channel.id)
-      })
-    }
+        return !this.myChannels.find(
+          (myChannel) => myChannel.id === channel.id
+        );
+      });
+    },
   },
 };
 </script>
