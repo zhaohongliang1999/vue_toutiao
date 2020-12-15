@@ -29,10 +29,10 @@
     <van-grid class="recommend-grid" :gutter="10">
       <van-grid-item
         class="grid-item"
-        v-for="(value, index) in 8"
+        v-for="(channel, index) in recommendChannels"
         :key="index"
         icon="plus"
-        text="文字"
+        :text="channel.name"
       >
       </van-grid-item>
     </van-grid>
@@ -40,18 +40,60 @@
 </template>
 
 <script>
+import { getAllChannels } from "@/api/channel";
 export default {
   name: "ChannelEdit",
-  props : {
-    myChannels : {
-      type : Array,
-      required : true
+  props: {
+    myChannels: {
+      type: Array,
+      required: true,
     },
-    active : {
-      type : Number,
-      required : true
+    active: {
+      type: Number,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      allChannels: [], // 所有频道
+    };
+  },
+  created() {
+      this.loadAllChannels()
+  },
+  methods: {
+    async loadAllChannels() {
+      try {
+        const { data } = await getAllChannels();
+        this.allChannels = data.data.channels;
+      } catch {
+        this.$toast("数据获取失败");
+      }
+    },
+  },
+   computed: {
+    /* recommendChannels() {
+      const channels = []
+      this.allChannels.forEach(channel => {
+        // find 找到符合条件的第一个就返回，后面就不再查找！
+        const ret = this.myChannels.find(
+          myChannel => myChannel.id === channel.id
+        )
+        // 我的频道没有找到 channel，则收集
+        if (!ret) {
+          channels.push(channel)
+        }
+      })
+      return channels
+    } */
+    recommendChannels() {
+      // filter 把符合条件的元素返回到新数组
+      return this.allChannels.filter(channel => {
+        // find 找到符合条件的第一个就返回，后面就不再查找！
+        return !this.myChannels.find(myChannel => myChannel.id === channel.id)
+      })
     }
-  }
+  },
 };
 </script>
 
@@ -62,7 +104,7 @@ export default {
     font-size: 32px;
     color: #333333;
   }
-   // 编辑按钮
+  // 编辑按钮
   .edit-btn {
     width: 104px;
     height: 48px;
@@ -70,7 +112,7 @@ export default {
     color: #f85959;
     border: 1px solid #f85959;
   }
-   /deep/ .grid-item {
+  /deep/ .grid-item {
     width: 160px;
     height: 86px;
     .van-grid-item__content {
