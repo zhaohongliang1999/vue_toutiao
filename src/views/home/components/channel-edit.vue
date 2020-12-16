@@ -52,7 +52,9 @@
 </template>
 
 <script>
-import { getAllChannels } from "@/api/channel";
+import { getAllChannels , addUserChannel } from "@/api/channel";
+import { mapState } from 'vuex'
+import { setItem } from '@/utils/storage.js'
 export default {
   name: "ChannelEdit",
   props: {
@@ -84,8 +86,24 @@ export default {
         this.$toast("数据获取失败");
       }
     },
-    onAddChannel(channel) {
+    async onAddChannel(channel) {
       this.myChannels.push(channel);
+      // 数据持久化处理
+      if (this.user) {
+           try {
+             // 已登录，数据存储到线上
+             await addUserChannel({
+               id : channel.id , //频道 id
+               seq : this.myChannels.length // 频道的 序号
+             })
+             this.$toast('添加成功')
+           } catch (err) {
+              this.$toast('保存失败')
+           }
+      } else {
+         // 未登录
+         setItem('TOUTIAO_CHANNELS' , this.myChannels)
+      }
     },
     onMyChannelClick(channel,index) {
       // 如果是编辑状态，删除频道
@@ -128,6 +146,8 @@ export default {
         );
       });
     },
+    // 获取user
+    ...mapState(['user'])
   },
 };
 </script>
