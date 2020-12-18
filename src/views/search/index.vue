@@ -22,51 +22,58 @@
       @search="onSearch"
     />
     <!-- 搜索历史 -->
-    <search-history 
-    v-else 
-    :search-histories="searchHistories"
-    @clear-search-histories="searchHistories = []"
-    @search="onSearch"
+    <search-history
+      v-else
+      :search-histories="searchHistories"
+      @clear-search-histories="searchHistories = []"
+      @search="onSearch"
     />
   </div>
 </template>
 
 <script>
-import SearchHistory from './components/search-history'
-import SearchSuggestion from './components/search-suggestion'
-import SearchResult from './components/search-result'
+import SearchHistory from "./components/search-history";
+import SearchSuggestion from "./components/search-suggestion";
+import SearchResult from "./components/search-result";
+import { setItem, getItem } from "@/utils/storage";
 export default {
-  name: 'SearchIndex',
+  name: "SearchIndex",
   components: {
     SearchHistory,
     SearchSuggestion,
-    SearchResult
+    SearchResult,
   },
   data() {
     return {
-      searchText: '',
+      searchText: "",
       isResultShow: false, // 控制搜索结果的展示
-      searchHistories: []
+      searchHistories: getItem("TOUTIAO_SEARCH_HISTORIES") || [],
+    };
+  },
+  watch: {
+    // 监听searchHistories的变化
+    searchHistories(value) {
+      setItem('TOUTIAO_SEARCH_HISTORIES', value)
     }
   },
   methods: {
     onSearch(val) {
-      this.searchText = val
+      this.searchText = val;
       // 存储搜索历史记录
       // 期望最新的放到最前面！
-      const index = this.searchHistories.indexOf(val)
+      const index = this.searchHistories.indexOf(val);
       if (index !== -1) {
-        this.searchHistories.splice(index, 1)
+        this.searchHistories.splice(index, 1);
       }
-      this.searchHistories.unshift(val)
+      this.searchHistories.unshift(val);
       // 展示搜索结果
-      this.isResultShow = true
+      this.isResultShow = true;
     },
     onCancel() {
-      this.$router.back()
-    }
-  }
-}
+      this.$router.back();
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
