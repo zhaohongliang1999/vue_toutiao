@@ -13,9 +13,14 @@
         @focus="isResultShow = false"
       />
     </form>
-    <search-result v-if="isResultShow" />
+    <!-- 搜索结果 -->
+    <search-result v-if="isResultShow"  :search-text="searchText"/>
     <!-- 联想建议 -->
-    <search-suggestion v-else-if="searchText" :search-text="searchText" />
+   <search-suggestion
+      v-else-if="searchText"
+      :search-text="searchText"
+      @search="onSearch"
+    />
     <!-- 搜索历史 -->
     <search-history v-else />
   </div>
@@ -41,6 +46,7 @@ export default {
   },
   methods: {
     onSearch(val) {
+      this.searchText = val
       // 展示搜索结果
       this.isResultShow = true
     },
