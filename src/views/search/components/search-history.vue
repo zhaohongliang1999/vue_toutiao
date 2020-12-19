@@ -37,17 +37,17 @@ export default {
       isDeleteShow: false, // 控制删除显示状态
     };
   },
-  methods : {
-     onSearchItemClick(item, index) {
-       if (this.isDeleteShow) {
-         // 删除状态，删除历史记录
-        this.searchHistories.splice(index, 1)
-       } else {
-          // 非删除状态，直接进入搜索
-        this.$emit('search', item)
-       }
-     }
-  }
+  methods: {
+    onSearchItemClick(item, index) {
+      if (this.isDeleteShow) {
+        // 删除状态，删除历史记录
+        this.searchHistories.splice(index, 1);
+      } else {
+        // 非删除状态，直接进入搜索
+        this.$emit("search", item);
+      }
+    },
+  },
 };
 </script>
 
