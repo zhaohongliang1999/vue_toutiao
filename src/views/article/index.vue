@@ -53,7 +53,11 @@
 
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button 
+          class="comment-btn" 
+          type="default" round 
+          size="small"
+          @click="isPostShow = true"
             >写评论</van-button
           >
           <!-- 这里在 info 替换成 badge -->
@@ -73,6 +77,14 @@
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
+        <!-- 发布评论 -->
+       <van-popup 
+       v-model="isPostShow"
+       position="bottom" 
+        > 
+        123
+        </van-popup>
+        <!-- /发布评论 -->
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -95,25 +107,25 @@
 </template>
 
 <script>
-import { getArticleById } from '@/api/article'
-import { ImagePreview } from 'vant'
-import FollowUser from '@/components/follow-user'
-import CollectArticle from '@/components/collect-article'
-import LikeArticle from '@/components/like-article'
-import CommentList from './components/comment-list'
+import { getArticleById } from "@/api/article";
+import { ImagePreview } from "vant";
+import FollowUser from "@/components/follow-user";
+import CollectArticle from "@/components/collect-article";
+import LikeArticle from "@/components/like-article";
+import CommentList from "./components/comment-list";
 export default {
-  name: 'ArticleIndex',
+  name: "ArticleIndex",
   components: {
     FollowUser,
     CollectArticle,
     LikeArticle,
-    CommentList
+    CommentList,
   },
   props: {
     articleId: {
       type: [Number, String, Object],
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -121,13 +133,14 @@ export default {
       loading: true, // 加载中的状态
       errStatus: 0, // 失败的状态码
       followLoading: false, // 关注按钮的 loading 状态
-      totalCommentCount: 0
-    }
+      totalCommentCount: 0,
+      isPostShow : false // 控制发布评论的显示状态
+    };
   },
   computed: {},
   watch: {},
   created() {
-    this.loadArticle()
+    this.loadArticle();
   },
   mounted() {
     // mounted 里面也是拿不到的，因为获取数据的操作是异步（渲染又在获取数据之后）
@@ -135,40 +148,40 @@ export default {
   },
   methods: {
     async loadArticle() {
-      this.loading = true
+      this.loading = true;
       // console.log(this.articleId.toString(), 233)
       try {
-        const { data } = await getArticleById(this.articleId.toString())
+        const { data } = await getArticleById(this.articleId.toString());
         /* if (Math.random() > 0.5) {
           JSON.parse('xxx')
         } */
-        this.article = data.data
+        this.article = data.data;
         setTimeout(() => {
-          this.previewImage()
-        }, 0)
+          this.previewImage();
+        }, 0);
       } catch (err) {
         if (err.response && err.response.status === 404) {
-          this.errStatus = 404
+          this.errStatus = 404;
         }
-        console.log('获取数据失败', err)
+        console.log("获取数据失败", err);
       }
       // 关闭 loading 状态
-      this.loading = false
+      this.loading = false;
     },
     previewImage() {
-      const articleContent = this.$refs['article-content']
-      const imgs = articleContent.querySelectorAll('img')
-      const images = []
+      const articleContent = this.$refs["article-content"];
+      const imgs = articleContent.querySelectorAll("img");
+      const images = [];
       imgs.forEach((img, index) => {
-        images.push(img.src)
+        images.push(img.src);
         img.onclick = function() {
           ImagePreview({
             images,
-            startPosition: index
-          })
-        }
-      })
-    }
+            startPosition: index,
+          });
+        };
+      });
+    },
     /* async onFollow() {
       this.followLoading = true // 打开关注按钮的 loading
       try {
@@ -191,13 +204,13 @@ export default {
       }
       this.followLoading = false // 关闭按钮的 loading 状态
     } */
-  }
-}
+  },
+};
 </script>
 
 <style scoped lang="less">
 // 测试 => http://localhost:8080/#/article/138567
-@import './github-markdown.css';
+@import "./github-markdown.css";
 .article-container {
   .main-wrap {
     position: fixed;
