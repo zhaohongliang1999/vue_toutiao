@@ -7,18 +7,21 @@
     error-text="加载失败，请点击重试"
     @load="onLoad"
   >
-    <van-cell
+    <comment-item
       v-for="(item, index) in list"
       :key="index"
-      :title="item.content"
+      :comment="item"
     />
   </van-list>
 </template>
 
 <script>
 import { getComments } from "@/api/comment";
+import CommentItem from './comment-item'
+import commentItem from './comment-item.vue';
 // http://localhost:8080/#/article/137825
 export default {
+  components: { commentItem },
   name: "CommentList",
   props: {
     source: {
