@@ -48,6 +48,7 @@
         <!-- 文章评论列表 -->
         <comment-list
           :source="article.art_id"
+          :list="commentList"
           @onload-success="totalCommentCount = $event.total_count"
         />
 
@@ -82,7 +83,11 @@
        v-model="isPostShow"
        position="bottom" 
         > 
-         <comment-post />
+         <comment-post 
+          :target= "article.art_id"
+          @post-success="onPostSuccess"
+         >
+         </comment-post>
         </van-popup>
         <!-- /发布评论 -->
       </div>
@@ -136,7 +141,8 @@ export default {
       errStatus: 0, // 失败的状态码
       followLoading: false, // 关注按钮的 loading 状态
       totalCommentCount: 0,
-      isPostShow : false // 控制发布评论的显示状态
+      isPostShow : false , // 控制发布评论的显示状态
+      commentList : [] // 评论列表
     };
   },
   computed: {},
@@ -184,6 +190,12 @@ export default {
         };
       });
     },
+    onPostSuccess (data) {
+       // 关闭弹出层
+       this.isPostShow = false
+       // 将发布内容显示到列表顶部
+       this.commentList.unshift(data.new_obj)
+    }
     /* async onFollow() {
       this.followLoading = true // 打开关注按钮的 loading
       try {
