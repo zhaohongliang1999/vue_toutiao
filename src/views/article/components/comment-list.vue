@@ -6,6 +6,7 @@
     :error.sync="error"
     error-text="加载失败，请点击重试"
     @load="onLoad"
+    :immediate-check="false"
   >
     <comment-item
       v-for="(item, index) in list"
@@ -18,8 +19,8 @@
 
 <script>
 import { getComments } from "@/api/comment";
-import CommentItem from './comment-item'
-import commentItem from './comment-item.vue';
+import CommentItem from "./comment-item";
+import commentItem from "./comment-item.vue";
 // http://localhost:8080/#/article/137825
 export default {
   components: { commentItem },
@@ -29,10 +30,17 @@ export default {
       type: [Number, String, Object],
       required: true,
     },
-    list : {
-      type : Array,
-      default : () => []
-    }
+    list: {
+      type: Array,
+      default: () => [],
+    },
+    type: {
+      type: String,
+      validator(value) {
+        return ["a", "c"].includes(value);
+      },
+      default: "a",
+    },
   },
   data() {
     return {
@@ -45,6 +53,7 @@ export default {
     };
   },
   created() {
+    this.loading = true;
     // 一上来就加载一次，为了显示评论总数
     this.onLoad();
   },
@@ -53,8 +62,8 @@ export default {
       try {
         // 1. 请求数据
         const { data } = await getComments({
-          type: "a", // 评论类型，a 代表对文章的评论
-          source: this.source, // 源 id，文章 id 或评论 id
+          type: this.type, // 评论类型，a 代表对文章的评论，c 代表评论的回复
+          source: this.source.toString(), // 源 id，文章 id 或评论 id
           offset: this.offset,
           limit: this.limit, // 获取的个数
         });
@@ -62,7 +71,7 @@ export default {
         const { results } = data.data;
         this.list.push(...results);
         // 把总数量传递到父级
-        this.$emit('onload-success', data.data)
+        this.$emit("onload-success", data.data);
         // 3. 将 loading 设置为 false
         this.loading = false;
         // 4. 判断是否还有数据

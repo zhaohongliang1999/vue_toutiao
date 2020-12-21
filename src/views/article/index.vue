@@ -115,7 +115,8 @@
          position="bottom"
          style="height : 100%;"
          >
-         <comment-reply 
+         <comment-reply
+         v-if="isReplyShow" 
          :comment="currentComment"
          @close="isReplyShow = false"
          ></comment-reply>
