@@ -32,13 +32,17 @@ export default {
   methods: {
     async onCollect() {
       this.loading = true
+      let r
       try {
         if (this.value) {
           // 已收藏，取消收藏
-          await deleteCollect(this.articleId)
+        r =  await deleteCollect(this.articleId)
         } else {
           // 没有收藏，添加收藏
-          await addCollect(this.articleId)
+         r = await addCollect(this.articleId)
+        }
+        if (!r) {
+         return  this.$toast.fail('操作失败，请重试')
         }
         // 更新视图
         this.$emit('input', !this.value)
