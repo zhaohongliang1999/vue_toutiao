@@ -31,7 +31,7 @@
     v-model="isShowUpdateName"
     style="height: 100%"
     position="bottom">
-      编辑昵称
+      <update-name @close="isShowUpdateName = false"/>
     </van-popup>
     <!-- 编辑昵称弹层 -->
   </div>
@@ -39,8 +39,12 @@
 
 <script>
 import { getUserProfile } from '@/api/user'
+import UpdateName from './components/update-name'
 export default {
   name : 'UserProfile',
+  components : {
+    UpdateName
+  },
   data () {
     return {
       user : {}, // 个人信息
@@ -66,8 +70,14 @@ export default {
 </script>
 
 <style scoped lang='less'>
+.user-profile {
+
  .avatar {
    width: 60px;
    height: 60px;
+ }
+.van-popup {
+  background: #f5f7f9;
+}
  }
 </style>
